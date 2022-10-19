@@ -1,12 +1,12 @@
 package com.QSRAutoSplitter;
 
 import com.google.inject.Provides;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import net.runelite.api.ChatMessageType;
-import net.runelite.api.Client;
-import net.runelite.api.GameState;
+import net.runelite.api.*;
 import net.runelite.api.events.GameStateChanged;
 import net.runelite.api.events.GameTick;
+import net.runelite.api.events.ScriptPreFired;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.plugins.Plugin;
@@ -30,6 +30,9 @@ public class QSRAutoSplitterPlugin extends Plugin
 {
 	private static final Logger logger = LoggerFactory.getLogger(QSRAutoSplitterPlugin.class);
 
+	// the script that returns the game timer
+	public static final int SPEEDRUNNING_HELPER_UPDATE = 5879;
+
 	// The variables to interact with livesplit
 	PrintWriter writer;
 
@@ -42,13 +45,16 @@ public class QSRAutoSplitterPlugin extends Plugin
 	@Inject
 	private ClientToolbar clientToolbar;
 
+	@Getter
+	private boolean interpolate;
+
 	// side panel
 	private NavigationButton navButton;
 	private QSRAutoSplitterPanel panel;
 
 	// is the timer running?
-	private boolean started;
-	private boolean paused;
+	private boolean started = false;
+	private boolean paused = false;
 
 	@Provides
 	QSRAutoSplitterConfig provideConfig(ConfigManager configManager)
@@ -123,6 +129,7 @@ public class QSRAutoSplitterPlugin extends Plugin
 		if (!started && isInSpeedrun()) {
 			started = true;
 			sendMessage("reset");
+			sendMessage("initgametime"); //FIXME find better spot to init
 			sendMessage("starttimer");
 			switch (client.getVarbitValue(13627)) {
 				case 1:
@@ -154,8 +161,23 @@ public class QSRAutoSplitterPlugin extends Plugin
 	}
 
 	@Subscribe
+	public void onScriptPreFired(ScriptPreFired event) {
+		ScriptEvent scriptEvent = event.getScriptEvent();
+		// Filter out the non-server created scripts. Do note that other plugins may call CS2s, such as the quest helper plugin.
+		if (scriptEvent == null || scriptEvent.getSource() != null) {
+			return;
+		}
+		final Object[] arguments = scriptEvent.getArguments();
+		final int scriptId = (int) arguments[0];
+		if (scriptId == SPEEDRUNNING_HELPER_UPDATE)
+		{
+			final int ticks = (int) arguments[1];
+			sendMessage("setgametime " + ticks*0.6);
+		}
+	}
+
+	@Subscribe
 	private void onGameStateChanged(GameStateChanged event) {
-		// TODO account for world hop tick delay
 		logger.debug( "QSR: state changed to " + event.getGameState());
 		if (started) {
 			if (event.getGameState() == GameState.LOADING ||
