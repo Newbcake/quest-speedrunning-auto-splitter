@@ -4,6 +4,8 @@ import com.google.inject.Provides;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.ChatMessageType;
 import net.runelite.api.Client;
+import net.runelite.api.GameState;
+import net.runelite.api.events.GameStateChanged;
 import net.runelite.api.events.GameTick;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
@@ -12,6 +14,8 @@ import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.ui.ClientToolbar;
 import net.runelite.client.ui.NavigationButton;
 import net.runelite.client.util.ImageUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import java.awt.image.BufferedImage;
@@ -24,6 +28,8 @@ import java.io.PrintWriter;
 )
 public class QSRAutoSplitterPlugin extends Plugin
 {
+	private static final Logger logger = LoggerFactory.getLogger(QSRAutoSplitterPlugin.class);
+
 	// The variables to interact with livesplit
 	PrintWriter writer;
 
@@ -42,6 +48,7 @@ public class QSRAutoSplitterPlugin extends Plugin
 
 	// is the timer running?
 	private boolean started;
+	private boolean paused;
 
 	@Provides
 	QSRAutoSplitterConfig provideConfig(ConfigManager configManager)
@@ -143,6 +150,27 @@ public class QSRAutoSplitterPlugin extends Plugin
 			// TODO: need a way to distinguish between finishing quest and just resetting
 			client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "QSR: reset run early", null);
 			sendMessage("pause");
+		}
+	}
+
+	@Subscribe
+	private void onGameStateChanged(GameStateChanged event) {
+		// TODO account for world hop tick delay
+		logger.debug( "QSR: state changed to " + event.getGameState());
+		if (started) {
+			if (event.getGameState() == GameState.LOADING ||
+					event.getGameState() == GameState.LOGGED_IN ||
+					event.getGameState() == GameState.CONNECTION_LOST) {
+				if (paused) {
+					sendMessage("resume");
+					logger.debug( "QSR: unpaused on " + event.getGameState());
+					paused = false;
+				}
+			} else if (!paused) {
+				logger.debug( "QSR: paused on " + event.getGameState());
+				sendMessage("pause");
+				paused = true;
+			}
 		}
 	}
 
