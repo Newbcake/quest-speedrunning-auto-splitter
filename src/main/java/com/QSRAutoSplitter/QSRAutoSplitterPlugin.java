@@ -2,8 +2,11 @@ package com.QSRAutoSplitter;
 
 import com.google.inject.Provides;
 import lombok.extern.slf4j.Slf4j;
+import net.runelite.api.ChatMessageType;
 import net.runelite.api.Client;
+import net.runelite.api.events.GameTick;
 import net.runelite.client.config.ConfigManager;
+import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.ui.ClientToolbar;
@@ -36,6 +39,9 @@ public class QSRAutoSplitterPlugin extends Plugin
 	// side panel
 	private NavigationButton navButton;
 	private QSRAutoSplitterPanel panel;
+
+	// is the timer running?
+	private boolean started;
 
 	@Provides
 	QSRAutoSplitterConfig provideConfig(ConfigManager configManager)
@@ -93,5 +99,62 @@ public class QSRAutoSplitterPlugin extends Plugin
 			writer.write(message + "\r\n");
 			writer.flush();
 		}
+	}
+			//sendMessage("split");
+
+	/*
+    void onGameTick
+    Called each game tick. We check to see if we've started a run, and we tell LiveSplit to start the timer
+    Parameters:
+        None
+    Returns:
+        None
+     */
+	@Subscribe
+	public void onGameTick(GameTick event) {
+
+		if (!started && isInSpeedrun()) {
+			started = true;
+			sendMessage("reset");
+			sendMessage("starttimer");
+			switch (client.getVarbitValue(13627)) {
+				case 1:
+					client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "QSR: started VS", null);
+					break;
+				case 2:
+					client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "QSR: started DS", null);
+					break;
+				case 7:
+					client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "QSR: started ETC", null);
+					break;
+				case 8:
+					client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "QSR: started CA", null);
+					break;
+				case 17:
+					client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "QSR: started DSI", null);
+					break;
+				default:
+					client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "QSR: run has not been implemented yet", null);
+					break;
+			}
+		}
+		else if (started && !isInSpeedrun()) {
+			started = false;
+			// TODO: need a way to distinguish between finishing quest and just resetting
+			client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "QSR: reset run early", null);
+			sendMessage("pause");
+		}
+	}
+
+	public boolean isInSpeedrun() {
+		return client.getVarbitValue(12395) == 5;
+		// VARBIT MEANINGS
+		// 12395 = 0 not in a run
+		// 		   5 in a run
+		// 13627 = 1 Vampyre Slayer
+		//		   2 Demon Slayer
+		// 		   7 Ernest the Chicken
+		// 		   8 Cook's Assistant
+		// 		   17 Dragon Slayer I
 	}
 }
