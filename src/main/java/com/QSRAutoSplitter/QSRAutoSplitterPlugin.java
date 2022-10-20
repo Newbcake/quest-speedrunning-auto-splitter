@@ -4,9 +4,8 @@ import com.google.inject.Provides;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.*;
-import net.runelite.api.events.GameStateChanged;
-import net.runelite.api.events.GameTick;
-import net.runelite.api.events.ScriptPreFired;
+import net.runelite.api.events.*;
+import net.runelite.api.widgets.WidgetInfo;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.events.ClientShutdown;
@@ -37,6 +36,12 @@ public class QSRAutoSplitterPlugin extends Plugin
 	public static final int SPEEDRUNNING_HELPER_UPDATE = 5879;
 	public static final int SPEEDRUN_QUEST_SIGNIFIER = 13627;
 	public static final int SPEEDRUN_ACTIVE_SIGNIFIER = 12395;
+
+	public static final int QUESTS_COMPLETE_COUNTER = 6347;
+
+	// The number of quests completed. If this increases during a run, we've completed the quest.
+	private int questsComplete;
+	private int currTicks;
 
 	// The variables to interact with livesplit
 	PrintWriter writer;
@@ -149,10 +154,10 @@ public class QSRAutoSplitterPlugin extends Plugin
 			try {
 				return reader.readLine();
 			} catch (IOException e) {
-				return "Error: no message found";
+				return "ERROR";
 			}
 		}
-		return "Error: reader not found";
+		return "ERROR";
 	}
 			//sendMessage("split");
 
@@ -172,6 +177,7 @@ public class QSRAutoSplitterPlugin extends Plugin
 			sendMessage("reset");
 			sendMessage("initgametime"); //FIXME find better spot to init
 			sendMessage("starttimer");
+			questsComplete = client.getVarbitValue(QUESTS_COMPLETE_COUNTER);
 			switch (client.getVarbitValue(SPEEDRUN_QUEST_SIGNIFIER)) {
 				case QuestID.CA:
 					client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "QSR: started CA", null);
@@ -192,8 +198,10 @@ public class QSRAutoSplitterPlugin extends Plugin
 					client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "QSR: run has not been implemented yet", null);
 					break;
 			}
-		}
-		else if (started && !isInSpeedrun()) {
+		} else if (started && client.getWidget(WidgetInfo.QUEST_COMPLETED_NAME_TEXT) != null) {
+			completeRun();
+			started = false;
+		} else if (started && !isInSpeedrun()) {
 			started = false;
 			sendMessage("getcurrenttimerphase");
 			switch (receiveMessage()) {
@@ -207,6 +215,11 @@ public class QSRAutoSplitterPlugin extends Plugin
 					break;
 			}
 		}
+		if ( client.getWidget(WidgetInfo.QUEST_COMPLETED_NAME_TEXT) != null) {
+			client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "QSR: quest complete", null);
+
+		}
+
 	}
 
 	@Subscribe
@@ -221,6 +234,7 @@ public class QSRAutoSplitterPlugin extends Plugin
 		if (scriptId == SPEEDRUNNING_HELPER_UPDATE)
 		{
 			final int ticks = (int) arguments[1];
+			currTicks = ticks;
 			sendMessage("setgametime " + ticks*0.6);
 		}
 	}
@@ -245,6 +259,60 @@ public class QSRAutoSplitterPlugin extends Plugin
 		}
 	}
 
+	/*
+   void onChatMessage
+   Called every time the client receives a message in the chat box. Checks for end of run because there's no obvious script.
+   Parameters:
+       event (ChatMessage): The object that contains the chat message text
+   Returns:
+       None
+    */
+	@Subscribe
+	public void onChatMessage(ChatMessage event) {
+	}
+	public void completeRun() {
+		questsComplete = 0;
+		started = false;
+		sendMessage("getcurrenttimerphase");
+		String msg = receiveMessage();
+		loop:
+		while (!msg.equals("ERROR")) {
+			switch (msg) {
+				case "Running":
+					sendMessage("getsplitindex");
+					String i = receiveMessage();
+					sendMessage("skipsplit");
+					sendMessage("getsplitindex");
+					String j = receiveMessage();
+					if (i.equals(j)) {
+						sendMessage("setgametime " + (currTicks + 1) * 0.6);
+						sendMessage("split");
+						break loop;
+					}
+					break;
+				case "Paused":
+					sendMessage("resume");
+					break;
+				case "Ended":
+					sendMessage("unsplit");
+					break;
+				case "NotRunning":
+					break loop;
+			}
+			sendMessage("getcurrenttimerphase");
+			msg = receiveMessage();
+		}
+
+	}
+
+	@Subscribe
+	public void onVarbitChanged(VarbitChanged event) {
+		if (started && client.getVarbitValue(6347) > questsComplete) {
+			completeRun();
+			client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "QSR: quest complete!", null);
+
+		}
+	}
 	public boolean isInSpeedrun() {
 		return client.getVarbitValue(SPEEDRUN_ACTIVE_SIGNIFIER) == 5;
 		// 12395 = 0 not in a run
