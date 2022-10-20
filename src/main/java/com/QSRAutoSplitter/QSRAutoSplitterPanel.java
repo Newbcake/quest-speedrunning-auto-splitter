@@ -10,6 +10,8 @@ import javax.inject.Inject;
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 import java.awt.*;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 
@@ -19,13 +21,15 @@ public class QSRAutoSplitterPanel extends PluginPanel
     private final QSRAutoSplitterConfig config;
     private final QSRAutoSplitterPlugin splitter;
     private PrintWriter writer;
+    private BufferedReader reader;
     private Socket socket;
     private JLabel status;
 
     @Inject
-    QSRAutoSplitterPanel(Client client, PrintWriter writer, QSRAutoSplitterConfig config, QSRAutoSplitterPlugin splitter){
+    QSRAutoSplitterPanel(Client client, PrintWriter writer, BufferedReader reader, QSRAutoSplitterConfig config, QSRAutoSplitterPlugin splitter){
         this.client = client;
         this.writer = writer;
+        this.reader = reader;
         this.config = config;
         this.splitter = splitter;
     }
@@ -34,7 +38,9 @@ public class QSRAutoSplitterPanel extends PluginPanel
         try {
             socket = new Socket("localhost", config.port());
             writer = new PrintWriter(socket.getOutputStream());
+            reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             splitter.writer = writer;
+            splitter.reader = reader;
 
             set_connected();
 

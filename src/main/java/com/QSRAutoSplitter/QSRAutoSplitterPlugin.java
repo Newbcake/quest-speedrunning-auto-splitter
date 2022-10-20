@@ -19,6 +19,8 @@ import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import java.awt.image.BufferedImage;
+import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.PrintWriter;
 
 @Slf4j
@@ -35,6 +37,7 @@ public class QSRAutoSplitterPlugin extends Plugin
 
 	// The variables to interact with livesplit
 	PrintWriter writer;
+	BufferedReader reader;
 
 	@Inject
 	private Client client;
@@ -75,7 +78,7 @@ public class QSRAutoSplitterPlugin extends Plugin
 	protected void startUp()
 	{
 		final BufferedImage icon = ImageUtil.loadImageResource(getClass(), "/qsr_auto_splitter_icon.png");
-		panel = new QSRAutoSplitterPanel(client, writer, config, this);
+		panel = new QSRAutoSplitterPanel(client, writer, reader, config, this);
 		navButton = NavigationButton.builder().tooltip("Quest Speedrunning Auto Splitter")
 				.icon(icon).priority(6).panel(panel).build();
 		clientToolbar.addNavigation(navButton);
@@ -94,6 +97,7 @@ public class QSRAutoSplitterPlugin extends Plugin
 	@Override
 	protected void shutDown()
 	{
+		sendMessage("pause");
 		clientToolbar.removeNavigation(navButton);
 		panel.disconnect();  // terminates active socket
 	}
@@ -112,6 +116,18 @@ public class QSRAutoSplitterPlugin extends Plugin
 			writer.write(message + "\r\n");
 			writer.flush();
 		}
+	}
+
+	private String receiveMessage() {
+
+		if (reader != null) {
+			try {
+				return reader.readLine();
+			} catch (IOException e) {
+				return "Error: no message found";
+			}
+		}
+		return "Error: reader not found";
 	}
 			//sendMessage("split");
 
@@ -133,7 +149,7 @@ public class QSRAutoSplitterPlugin extends Plugin
 			sendMessage("starttimer");
 			switch (client.getVarbitValue(13627)) {
 				case 1:
-					client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "QSR: started VS", null);
+					client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "QSR: started CA", null);
 					break;
 				case 2:
 					client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "QSR: started DS", null);
@@ -142,7 +158,7 @@ public class QSRAutoSplitterPlugin extends Plugin
 					client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "QSR: started ETC", null);
 					break;
 				case 8:
-					client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "QSR: started CA", null);
+					client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "QSR: started VS", null);
 					break;
 				case 17:
 					client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "QSR: started DSI", null);
@@ -154,9 +170,17 @@ public class QSRAutoSplitterPlugin extends Plugin
 		}
 		else if (started && !isInSpeedrun()) {
 			started = false;
-			// TODO: need a way to distinguish between finishing quest and just resetting
-			client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "QSR: reset run early", null);
-			sendMessage("pause");
+			sendMessage("getcurrenttimerphase");
+			switch (receiveMessage()) {
+				case "Running":
+					sendMessage("pause");
+					break;
+				case "NotRunning:":
+				case "Paused":
+				case "Ended":
+				default:
+					break;
+			}
 		}
 	}
 
@@ -201,10 +225,10 @@ public class QSRAutoSplitterPlugin extends Plugin
 		// VARBIT MEANINGS
 		// 12395 = 0 not in a run
 		// 		   5 in a run
-		// 13627 = 1 Vampyre Slayer
+		// 13627 = 1 Cook's Assistant
 		//		   2 Demon Slayer
 		// 		   7 Ernest the Chicken
-		// 		   8 Cook's Assistant
+		// 		   8 Vampyre Slayer
 		// 		   17 Dragon Slayer I
 	}
 }
