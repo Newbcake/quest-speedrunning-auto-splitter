@@ -9,6 +9,7 @@ import net.runelite.api.events.GameTick;
 import net.runelite.api.events.ScriptPreFired;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
+import net.runelite.client.events.ClientShutdown;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.ui.ClientToolbar;
@@ -34,6 +35,8 @@ public class QSRAutoSplitterPlugin extends Plugin
 
 	// the script that returns the game timer
 	public static final int SPEEDRUNNING_HELPER_UPDATE = 5879;
+	public static final int SPEEDRUN_QUEST_SIGNIFIER = 13627;
+	public static final int SPEEDRUN_ACTIVE_SIGNIFIER = 12395;
 
 	// The variables to interact with livesplit
 	PrintWriter writer;
@@ -88,7 +91,7 @@ public class QSRAutoSplitterPlugin extends Plugin
 
 	/*
     void shutDown
-    Called when the user disables the plugin. We disconnect from the LiveSplit Server
+    Called when the user disables the plugin. We pause the timer and disconnect from the LiveSplit Server
     Parameters:
         None
     Returns:
@@ -101,6 +104,20 @@ public class QSRAutoSplitterPlugin extends Plugin
 		clientToolbar.removeNavigation(navButton);
 		panel.disconnect();  // terminates active socket
 	}
+
+	/*
+	void onClientShutdown
+	When the client is forcefully closed, the timer should pause
+	Parameters:
+		None
+	Returns:
+		None
+	 */
+	@Subscribe
+	private void onClientShutdown(ClientShutdown e) {
+		sendMessage("pause");
+	}
+
 
 	/*
 	void sendMessage
@@ -118,6 +135,14 @@ public class QSRAutoSplitterPlugin extends Plugin
 		}
 	}
 
+	/*
+	void receiveMessage
+	Receives a message from the LiveSplit server
+	Parameters:
+		None
+	Returns:
+		message (String): The message we are receiving
+	 */
 	private String receiveMessage() {
 
 		if (reader != null) {
@@ -147,20 +172,20 @@ public class QSRAutoSplitterPlugin extends Plugin
 			sendMessage("reset");
 			sendMessage("initgametime"); //FIXME find better spot to init
 			sendMessage("starttimer");
-			switch (client.getVarbitValue(13627)) {
-				case 1:
+			switch (client.getVarbitValue(SPEEDRUN_QUEST_SIGNIFIER)) {
+				case QuestID.CA:
 					client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "QSR: started CA", null);
 					break;
-				case 2:
+				case QuestID.DS:
 					client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "QSR: started DS", null);
 					break;
-				case 7:
+				case QuestID.ETC:
 					client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "QSR: started ETC", null);
 					break;
-				case 8:
+				case QuestID.VS:
 					client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "QSR: started VS", null);
 					break;
-				case 17:
+				case QuestID.DSI:
 					client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "QSR: started DSI", null);
 					break;
 				default:
@@ -221,14 +246,8 @@ public class QSRAutoSplitterPlugin extends Plugin
 	}
 
 	public boolean isInSpeedrun() {
-		return client.getVarbitValue(12395) == 5;
-		// VARBIT MEANINGS
+		return client.getVarbitValue(SPEEDRUN_ACTIVE_SIGNIFIER) == 5;
 		// 12395 = 0 not in a run
 		// 		   5 in a run
-		// 13627 = 1 Cook's Assistant
-		//		   2 Demon Slayer
-		// 		   7 Ernest the Chicken
-		// 		   8 Vampyre Slayer
-		// 		   17 Dragon Slayer I
 	}
 }

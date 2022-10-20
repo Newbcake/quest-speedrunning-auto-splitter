@@ -28,3 +28,6 @@ or you have mismatching ports in the plugin settings and the LiveSplit server se
 ![sidebar](readme_images/panel.png)
 
 If your status is green you are good to go.
+
+## Splits
+Make sure you have `Compare Against > Game Time` selected on LiveSplit, or the timer will be slightly out of sync.
