@@ -22,6 +22,8 @@ import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.HashMap;
+import java.util.List;
 
 @Slf4j
 @PluginDescriptor(
@@ -67,6 +69,10 @@ public class QSRAutoSplitterPlugin extends Plugin
 	private boolean started = false;
 	private boolean paused = false;
 
+	// events to split on TODO add more events and customization
+	HashMap<Integer, Integer[]> itemLists;
+	Integer[] currItemList;
+
 	@Provides
 	QSRAutoSplitterConfig provideConfig(ConfigManager configManager)
 	{
@@ -90,8 +96,25 @@ public class QSRAutoSplitterPlugin extends Plugin
 		navButton = NavigationButton.builder().tooltip("Quest Speedrunning Auto Splitter")
 				.icon(icon).priority(6).panel(panel).build();
 		clientToolbar.addNavigation(navButton);
+		initializeItemLists();
 
 		panel.startPanel();
+	}
+
+	private void initializeItemLists() {
+		itemLists = new HashMap<>();
+		itemLists.put(QuestID.CA, new Integer[]{ItemID.EGG, ItemID.POT_OF_FLOUR, ItemID.BUCKET_OF_MILK});
+		itemLists.put(QuestID.DS, new Integer[]{ItemID.SILVERLIGHT_KEY, ItemID.SILVERLIGHT_KEY_2400,
+				ItemID.SILVERLIGHT_KEY_2401});
+		itemLists.put(QuestID.ETC, new Integer[]{ItemID.RUBBER_TUBE, ItemID.KEY, ItemID.OIL_CAN, ItemID.PRESSURE_GAUGE,
+				ItemID.FISH_FOOD, ItemID.POISON, ItemID.SPADE});
+		itemLists.put(QuestID.VS, new Integer[]{ItemID.HAMMER, ItemID.STAKE, ItemID.GARLIC});
+		itemLists.put(QuestID.DSI, new Integer[]{ItemID.MAP_PART, ItemID.MAP_PART_1536, ItemID.MAP_PART_1537,
+				ItemID.WIZARDS_MIND_BOMB, ItemID.LOBSTER_POT, ItemID.UNFIRED_POT, ItemID.CLAY, ItemID.SILK,
+				ItemID.ANTIDRAGON_SHIELD, ItemID.HAMMER, ItemID.STEEL_NAILS, ItemID.PLANK,
+				ItemID.MAZE_KEY, ItemID.KEY_1543, ItemID.KEY_1544, ItemID.KEY_1545, ItemID.KEY_1546, ItemID.KEY_1547,
+				ItemID.KEY_1548});
+
 	}
 
 	/*
@@ -181,21 +204,27 @@ public class QSRAutoSplitterPlugin extends Plugin
 			switch (client.getVarbitValue(SPEEDRUN_QUEST_SIGNIFIER)) {
 				case QuestID.CA:
 					client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "QSR: started CA", null);
+					currItemList = itemLists.get(QuestID.CA).clone();
 					break;
 				case QuestID.DS:
 					client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "QSR: started DS", null);
+					currItemList = itemLists.get(QuestID.DS).clone();
 					break;
 				case QuestID.ETC:
 					client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "QSR: started ETC", null);
+					currItemList = itemLists.get(QuestID.ETC).clone();
 					break;
 				case QuestID.VS:
 					client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "QSR: started VS", null);
+					currItemList = itemLists.get(QuestID.VS).clone();
 					break;
 				case QuestID.DSI:
 					client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "QSR: started DSI", null);
+					currItemList = itemLists.get(QuestID.DSI).clone();
 					break;
 				default:
 					client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "QSR: run has not been implemented yet", null);
+					currItemList = new Integer[]{};
 					break;
 			}
 		} else if (started && client.getWidget(WidgetInfo.QUEST_COMPLETED_NAME_TEXT) != null) {
@@ -285,8 +314,7 @@ public class QSRAutoSplitterPlugin extends Plugin
 					sendMessage("getsplitindex");
 					String j = receiveMessage();
 					if (i.equals(j)) {
-						sendMessage("setgametime " + (currTicks + 1) * 0.6);
-						sendMessage("split");
+						split();
 						break loop;
 					}
 					break;
@@ -313,9 +341,33 @@ public class QSRAutoSplitterPlugin extends Plugin
 
 		}
 	}
+
+	@Subscribe
+	public void onItemContainerChanged(ItemContainerChanged event) {
+		final ItemContainer itemContainer = event.getItemContainer();
+		if (itemContainer != client.getItemContainer(InventoryID.INVENTORY))
+		{
+			return;
+		}
+
+		for (int i = 0; i < currItemList.length; i++) {
+			if (itemContainer.contains(currItemList[i])) {
+				split();
+				client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "QSR: split", null);
+				currItemList[i] = -2; // dedup (-1 is empty slot) FIXME
+			}
+		}
+
+	}
+
 	public boolean isInSpeedrun() {
 		return client.getVarbitValue(SPEEDRUN_ACTIVE_SIGNIFIER) == 5;
 		// 12395 = 0 not in a run
 		// 		   5 in a run
+	}
+
+	public void split() {
+		sendMessage("setgametime " + (currTicks + 1) * 0.6);
+		sendMessage("split");
 	}
 }
