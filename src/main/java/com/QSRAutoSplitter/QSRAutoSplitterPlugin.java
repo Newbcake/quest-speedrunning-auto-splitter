@@ -71,7 +71,9 @@ public class QSRAutoSplitterPlugin extends Plugin
 
 	// events to split on TODO add more events and customization
 	HashMap<Integer, Integer[]> itemLists;
+	HashMap<Integer, Integer[]> varbLists;
 	Integer[] currItemList;
+	Integer[] currVarbList;
 
 	@Provides
 	QSRAutoSplitterConfig provideConfig(ConfigManager configManager)
@@ -97,6 +99,7 @@ public class QSRAutoSplitterPlugin extends Plugin
 				.icon(icon).priority(6).panel(panel).build();
 		clientToolbar.addNavigation(navButton);
 		initializeItemLists();
+		initializeVarbLists();
 
 		panel.startPanel();
 	}
@@ -114,6 +117,14 @@ public class QSRAutoSplitterPlugin extends Plugin
 				ItemID.ANTIDRAGON_SHIELD, ItemID.HAMMER, ItemID.STEEL_NAILS, ItemID.PLANK,
 				ItemID.MAZE_KEY, ItemID.KEY_1543, ItemID.KEY_1544, ItemID.KEY_1545, ItemID.KEY_1546, ItemID.KEY_1547,
 				ItemID.KEY_1548});
+		itemLists.put(QuestID.PAR, new Integer[]{ItemID.CLAY, ItemID.KEY_PRINT, ItemID.YELLOW_DYE, ItemID.WIG,
+				ItemID.PASTE, ItemID.ROPE, ItemID.BEER, ItemID.PINK_SKIRT, ItemID.BRONZE_KEY});
+
+	}
+
+	private void initializeVarbLists() {
+		varbLists = new HashMap<>();
+		varbLists.put(QuestID.BCS, new Integer[]{12,18,20,32,38,40,42,46,48,54,60,62,68,72,80,88,92,98,100});
 
 	}
 
@@ -200,6 +211,9 @@ public class QSRAutoSplitterPlugin extends Plugin
 			sendMessage("reset");
 			sendMessage("initgametime"); //FIXME find better spot to init
 			sendMessage("starttimer");
+			currItemList = new Integer[]{};
+			currVarbList = new Integer[]{};
+
 			questsComplete = client.getVarbitValue(QUESTS_COMPLETE_COUNTER);
 			switch (client.getVarbitValue(SPEEDRUN_QUEST_SIGNIFIER)) {
 				case QuestID.CA:
@@ -222,6 +236,9 @@ public class QSRAutoSplitterPlugin extends Plugin
 					client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "QSR: started DSI", null);
 					currItemList = itemLists.get(QuestID.DSI).clone();
 					break;
+				case QuestID.BCS:
+					currItemList = new Integer[]{};
+					currVarbList = varbLists.get(QuestID.BCS).clone();
 				default:
 					client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "QSR: run has not been implemented yet", null);
 					currItemList = new Integer[]{};
@@ -339,6 +356,14 @@ public class QSRAutoSplitterPlugin extends Plugin
 			completeRun();
 			client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "QSR: quest complete!", null);
 
+		}
+
+		for (int i = 0; i < currVarbList.length; i++) {
+			if (client.getVarbitValue(QuestID.BCS_PROGRESS) == currVarbList[i]) {
+				split();
+				client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "QSR: split", null);
+				currVarbList[i] = -2; // dedup (-1 is empty slot) FIXME
+			}
 		}
 	}
 
