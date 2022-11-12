@@ -23,7 +23,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashMap;
-import java.util.List;
+
+import static com.QSRAutoSplitter.QSRID.SPEEDRUN_ACTIVE_SIGNIFIER;
 
 @Slf4j
 @PluginDescriptor(
@@ -35,11 +36,9 @@ public class QSRAutoSplitterPlugin extends Plugin
 	private static final Logger logger = LoggerFactory.getLogger(QSRAutoSplitterPlugin.class);
 
 	// the script that returns the game timer
-	public static final int SPEEDRUNNING_HELPER_UPDATE = 5879;
-	public static final int SPEEDRUN_QUEST_SIGNIFIER = 13627;
-	public static final int SPEEDRUN_ACTIVE_SIGNIFIER = 12395;
 
-	public static final int QUESTS_COMPLETE_COUNTER = 6347;
+
+
 
 	// The number of quests completed. If this increases during a run, we've completed the quest.
 	private int questsComplete;
@@ -81,15 +80,6 @@ public class QSRAutoSplitterPlugin extends Plugin
 		return configManager.getConfig(QSRAutoSplitterConfig.class);
 	}
 
-	/*
-	void startUp
-	The function is called when Runelite loads the plugin or is enabled by the user. We create the panel and give it
-	access to what it needs
-	Parameters:
-		None
-	Returns:
-		None
- */
 	@Override
 	protected void startUp()
 	{
@@ -106,36 +96,41 @@ public class QSRAutoSplitterPlugin extends Plugin
 
 	private void initializeItemLists() {
 		itemLists = new HashMap<>();
-		itemLists.put(QuestID.CA, new Integer[]{ItemID.EGG, ItemID.POT_OF_FLOUR, ItemID.BUCKET_OF_MILK});
-		itemLists.put(QuestID.DS, new Integer[]{ItemID.SILVERLIGHT_KEY, ItemID.SILVERLIGHT_KEY_2400,
+		itemLists.put(QSRID.CA, new Integer[]{ItemID.EGG, ItemID.POT_OF_FLOUR, ItemID.BUCKET_OF_MILK});
+		itemLists.put(QSRID.DS, new Integer[]{ItemID.SILVERLIGHT_KEY, ItemID.SILVERLIGHT_KEY_2400,
 				ItemID.SILVERLIGHT_KEY_2401});
-		itemLists.put(QuestID.ETC, new Integer[]{ItemID.RUBBER_TUBE, ItemID.KEY, ItemID.OIL_CAN, ItemID.PRESSURE_GAUGE,
+		itemLists.put(QSRID.ETC, new Integer[]{ItemID.RUBBER_TUBE, ItemID.KEY, ItemID.OIL_CAN, ItemID.PRESSURE_GAUGE,
 				ItemID.FISH_FOOD, ItemID.POISON, ItemID.SPADE});
-		itemLists.put(QuestID.VS, new Integer[]{ItemID.HAMMER, ItemID.STAKE, ItemID.GARLIC});
-		itemLists.put(QuestID.DSI, new Integer[]{ItemID.MAP_PART, ItemID.MAP_PART_1536, ItemID.MAP_PART_1537,
-				ItemID.WIZARDS_MIND_BOMB, ItemID.LOBSTER_POT, ItemID.UNFIRED_POT, ItemID.CLAY, ItemID.SILK,
+		itemLists.put(QSRID.VS, new Integer[]{ItemID.HAMMER, ItemID.STAKE, ItemID.GARLIC});
+		itemLists.put(QSRID.DSI, new Integer[]{ItemID.MAP_PART, ItemID.MAP_PART_1536, ItemID.MAP_PART_1537,
+				ItemID.WIZARDS_MIND_BOMB, ItemID.LOBSTER_POT, ItemID.UNFIRED_BOWL, ItemID.CLAY, ItemID.SILK,
 				ItemID.ANTIDRAGON_SHIELD, ItemID.HAMMER, ItemID.STEEL_NAILS, ItemID.PLANK,
-				ItemID.MAZE_KEY, ItemID.KEY_1543, ItemID.KEY_1544, ItemID.KEY_1545, ItemID.KEY_1546, ItemID.KEY_1547,
+				ItemID.KEY_1543, ItemID.KEY_1544, ItemID.KEY_1545, ItemID.KEY_1546, ItemID.KEY_1547,
 				ItemID.KEY_1548});
-		itemLists.put(QuestID.PAR, new Integer[]{ItemID.CLAY, ItemID.KEY_PRINT, ItemID.YELLOW_DYE, ItemID.WIG,
-				ItemID.PASTE, ItemID.ROPE, ItemID.BEER, ItemID.PINK_SKIRT, ItemID.BRONZE_KEY});
+		itemLists.put(QSRID.PAR, new Integer[]{ItemID.CLAY, ItemID.KEY_PRINT, ItemID.YELLOW_DYE, ItemID.WIG_2421,
+				ItemID.PASTE, ItemID.ROPE, ItemID.BEER, ItemID.PINK_SKIRT, ItemID.BRONZE_KEY, ItemID.ASHES,
+				ItemID.REDBERRIES, ItemID.BRONZE_BAR, ItemID.BUCKET_OF_WATER, ItemID.BALL_OF_WOOL,
+				ItemID.POT_OF_FLOUR});
+		itemLists.put(QSRID.BCS, new Integer[]{ItemID.SPADE, ItemID.TINDERBOX, ItemID.IRON_BAR, ItemID.COAL,
+				ItemID.CHEST_26955, ItemID.SCARAB_EMBLEM, ItemID.RUSTY_KEY, ItemID.COOKED_MEAT,
+				ItemID.LILY_OF_THE_ELID, ItemID.CURE_CRATE});
 
 	}
 
 	private void initializeVarbLists() {
 		varbLists = new HashMap<>();
-		varbLists.put(QuestID.BCS, new Integer[]{12,18,20,32,38,40,42,46,48,54,60,62,68,72,80,88,92,98,100});
+		varbLists.put(QSRID.DS, new Integer[]{QSRID.PRYSIN1});
+		varbLists.put(QSRID.PAR, new Integer[]{QSRID.OSMAN1, QSRID.ALI});
+		varbLists.put(QSRID.DSI, new Integer[]{QSRID.OZIACH, QSRID.BOUGHT_BOAT, QSRID.REPAIRED_BOAT,
+				QSRID.RECRUITED_NED, QSRID.CRANDOR, QSRID.ELVARG_SLAIN});
+		varbLists.put(QSRID.BCS, new Integer[]{QSRID.FIRST_CUTSCENE, QSRID.START_FIGHT1, QSRID.END_FIGHT1,
+				QSRID.MAISA2, QSRID.FURNACE_LIT, QSRID.SCARAB_ROTATE, QSRID.MAGES_START, QSRID.MAGES_DEAD,
+				QSRID.LEVERS, QSRID.URNS, QSRID.GHOST, QSRID.START_FIGHT3, QSRID.END_FIGHT3,
+				QSRID.SCARAB_DIALOGUE, QSRID.NARDAH1, QSRID.NARDAH2, QSRID.NARDAH3,
+				QSRID.HIGH_PRIEST, QSRID.START_FIGHT4, QSRID.END_FIGHT4});
 
 	}
 
-	/*
-    void shutDown
-    Called when the user disables the plugin. We pause the timer and disconnect from the LiveSplit Server
-    Parameters:
-        None
-    Returns:
-        None
-     */
 	@Override
 	protected void shutDown()
 	{
@@ -144,28 +139,11 @@ public class QSRAutoSplitterPlugin extends Plugin
 		panel.disconnect();  // terminates active socket
 	}
 
-	/*
-	void onClientShutdown
-	When the client is forcefully closed, the timer should pause
-	Parameters:
-		None
-	Returns:
-		None
-	 */
 	@Subscribe
 	private void onClientShutdown(ClientShutdown e) {
 		sendMessage("pause");
 	}
 
-
-	/*
-	void sendMessage
-	Sends a message to the LiveSplit server
-	Parameters:
-		message (String): The message we are sending
-	Returns:
-		None
-	 */
 	private void sendMessage(String message) {
 
 		if (writer != null) {
@@ -174,14 +152,6 @@ public class QSRAutoSplitterPlugin extends Plugin
 		}
 	}
 
-	/*
-	void receiveMessage
-	Receives a message from the LiveSplit server
-	Parameters:
-		None
-	Returns:
-		message (String): The message we are receiving
-	 */
 	private String receiveMessage() {
 
 		if (reader != null) {
@@ -195,14 +165,6 @@ public class QSRAutoSplitterPlugin extends Plugin
 	}
 			//sendMessage("split");
 
-	/*
-    void onGameTick
-    Called each game tick. We check to see if we've started a run, and we tell LiveSplit to start the timer
-    Parameters:
-        None
-    Returns:
-        None
-     */
 	@Subscribe
 	public void onGameTick(GameTick event) {
 
@@ -214,34 +176,39 @@ public class QSRAutoSplitterPlugin extends Plugin
 			currItemList = new Integer[]{};
 			currVarbList = new Integer[]{};
 
-			questsComplete = client.getVarbitValue(QUESTS_COMPLETE_COUNTER);
-			switch (client.getVarbitValue(SPEEDRUN_QUEST_SIGNIFIER)) {
-				case QuestID.CA:
+			questsComplete = client.getVarbitValue(QSRID.QUESTS_COMPLETE_COUNTER);
+			switch (client.getVarbitValue(QSRID.SPEEDRUN_QUEST_SIGNIFIER)) {
+				case QSRID.CA:
 					client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "QSR: started CA", null);
-					currItemList = itemLists.get(QuestID.CA).clone();
+					currItemList = itemLists.get(QSRID.CA).clone();
 					break;
-				case QuestID.DS:
+				case QSRID.DS:
 					client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "QSR: started DS", null);
-					currItemList = itemLists.get(QuestID.DS).clone();
+					currItemList = itemLists.get(QSRID.DS).clone();
+					currVarbList = varbLists.get(QSRID.DS).clone();
 					break;
-				case QuestID.ETC:
+				case QSRID.ETC:
 					client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "QSR: started ETC", null);
-					currItemList = itemLists.get(QuestID.ETC).clone();
+					currItemList = itemLists.get(QSRID.ETC).clone();
 					break;
-				case QuestID.VS:
+				case QSRID.PAR:
+					currItemList = itemLists.get(QSRID.PAR).clone();
+					currVarbList = varbLists.get(QSRID.PAR).clone();
+					break;
+				case QSRID.VS:
 					client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "QSR: started VS", null);
-					currItemList = itemLists.get(QuestID.VS).clone();
+					currItemList = itemLists.get(QSRID.VS).clone();
 					break;
-				case QuestID.DSI:
+				case QSRID.DSI:
 					client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "QSR: started DSI", null);
-					currItemList = itemLists.get(QuestID.DSI).clone();
+					currItemList = itemLists.get(QSRID.DSI).clone();
+					currVarbList = varbLists.get(QSRID.DSI).clone();
 					break;
-				case QuestID.BCS:
-					currItemList = new Integer[]{};
-					currVarbList = varbLists.get(QuestID.BCS).clone();
+				case QSRID.BCS:
+					currVarbList = varbLists.get(QSRID.BCS).clone();
+					break;
 				default:
 					client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "QSR: run has not been implemented yet", null);
-					currItemList = new Integer[]{};
 					break;
 			}
 		} else if (started && client.getWidget(WidgetInfo.QUEST_COMPLETED_NAME_TEXT) != null) {
@@ -277,7 +244,7 @@ public class QSRAutoSplitterPlugin extends Plugin
 		}
 		final Object[] arguments = scriptEvent.getArguments();
 		final int scriptId = (int) arguments[0];
-		if (scriptId == SPEEDRUNNING_HELPER_UPDATE)
+		if (scriptId == QSRID.SPEEDRUNNING_HELPER_UPDATE)
 		{
 			final int ticks = (int) arguments[1];
 			currTicks = ticks;
@@ -305,14 +272,6 @@ public class QSRAutoSplitterPlugin extends Plugin
 		}
 	}
 
-	/*
-   void onChatMessage
-   Called every time the client receives a message in the chat box. Checks for end of run because there's no obvious script.
-   Parameters:
-       event (ChatMessage): The object that contains the chat message text
-   Returns:
-       None
-    */
 	@Subscribe
 	public void onChatMessage(ChatMessage event) {
 	}
@@ -355,14 +314,28 @@ public class QSRAutoSplitterPlugin extends Plugin
 		if (started && client.getVarbitValue(6347) > questsComplete) {
 			completeRun();
 			client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "QSR: quest complete!", null);
-
 		}
 
 		for (int i = 0; i < currVarbList.length; i++) {
-			if (client.getVarbitValue(QuestID.BCS_PROGRESS) == currVarbList[i]) {
+			if (client.getVarbitValue(QSRID.DS_PROGRESS) == currVarbList[i]) {
 				split();
 				client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "QSR: split", null);
-				currVarbList[i] = -2; // dedup (-1 is empty slot) FIXME
+				currVarbList[i] = -2; // dedup
+			}
+			else if (client.getVarpValue(QSRID.PAR_PROGRESS) == currVarbList[i]) {
+				split();
+				client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "QSR: split", null);
+				currVarbList[i] = -2; // dedup
+			}
+			else if (client.getVarpValue(QSRID.DSI_PROGRESS) == currVarbList[i]) {
+				split();
+				client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "QSR: split", null);
+				currVarbList[i] = -2; // dedup
+			}
+			else if (client.getVarbitValue(QSRID.BCS_PROGRESS) == currVarbList[i]) {
+				split();
+				client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "QSR: split", null);
+				currVarbList[i] = -2; // dedup
 			}
 		}
 	}
@@ -386,9 +359,7 @@ public class QSRAutoSplitterPlugin extends Plugin
 	}
 
 	public boolean isInSpeedrun() {
-		return client.getVarbitValue(SPEEDRUN_ACTIVE_SIGNIFIER) == 5;
-		// 12395 = 0 not in a run
-		// 		   5 in a run
+		return client.getVarbitValue(QSRID.SPEEDRUN_ACTIVE_SIGNIFIER) == QSRID.IN_RUN;
 	}
 
 	public void split() {
