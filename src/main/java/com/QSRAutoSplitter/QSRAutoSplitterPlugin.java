@@ -170,11 +170,18 @@ public class QSRAutoSplitterPlugin extends Plugin
 				case QSRID.DS:   configStr = config.dsList();   break;
 				case QSRID.ETC:  configStr = config.etcList();  break;
 				case QSRID.PAR:  configStr = config.parList();  break;
+				case QSRID.BKF:  configStr = config.bkfList();  break;
 				case QSRID.VS:   configStr = config.vsList();   break;
 				case QSRID.DSI:  configStr = config.dsiList();  break;
+				case QSRID.DSII: configStr = config.dsiiList(); break;
+				case QSRID.TOH:  configStr = config.tohList();  break;
+				case QSRID.XMS:  configStr = config.xmsList();  break;
+				case QSRID.SOTF: configStr = config.sotfList(); break;
+				case QSRID.BIM:  configStr = config.bimList();  break;
+				case QSRID.AKD:  configStr = config.akdList();  break;
 				case QSRID.BCS:  configStr = config.bcsList();  break;
 				default:
-					client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "QSR: run has not been implemented yet", null);
+					client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "QSR: quest not found; plugin needs to be updated", null);
 					configStr = "";
 					break;
 			}
