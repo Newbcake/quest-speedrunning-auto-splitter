@@ -272,7 +272,6 @@ public class QSRAutoSplitterPlugin extends Plugin
 			if (client.getVarbitValue(pair.first) == pair.second) {
 				split();
 				varbList.remove(pair);
-				client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "QSR: " + pair.first + "; " + pair.second, null);
 
 			}
 		}
@@ -280,7 +279,6 @@ public class QSRAutoSplitterPlugin extends Plugin
 			if (client.getVarpValue(pair.first) == pair.second) {
 				split();
 				varpList.remove(pair);
-				client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "QSR: " + pair.first + "; " + pair.second, null);
 
 			}
 		}
@@ -298,7 +296,6 @@ public class QSRAutoSplitterPlugin extends Plugin
 			if (itemContainer.count(pair.first) >= pair.second) {
 				split();
 				itemList.remove(pair);
-				client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "QSR: " + pair.first + "; " + pair.second, null);
 
 			}
 		}
