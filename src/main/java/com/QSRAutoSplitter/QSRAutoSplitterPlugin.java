@@ -24,9 +24,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.*;
 
-import static com.QSRAutoSplitter.QSRID.QUESTS_COMPLETE_COUNTER;
-import static com.QSRAutoSplitter.QSRID.SPEEDRUN_ACTIVE_SIGNIFIER;
-
 @Slf4j
 @PluginDescriptor(
 	name = "QSR Auto Splitter",
@@ -281,7 +278,7 @@ public class QSRAutoSplitterPlugin extends Plugin
 
 	@Subscribe
 	public void onVarbitChanged(VarbitChanged event) {
-		if (started && client.getVarbitValue(QUESTS_COMPLETE_COUNTER) > questsComplete) {
+		if (started && client.getVarbitValue(QSRID.QUESTS_COMPLETE_COUNTER) > questsComplete) {
 			completeRun();
 		}
 
