@@ -1,14 +1,12 @@
 package com.QSRAutoSplitter;
 
 import com.google.inject.Provides;
-import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.*;
 import net.runelite.api.events.*;
 import net.runelite.api.widgets.WidgetInfo;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
-import net.runelite.client.events.ClientShutdown;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.ui.ClientToolbar;
@@ -35,7 +33,7 @@ public class QSRAutoSplitterPlugin extends Plugin
 
 	// The number of quests completed. If this increases during a run, we've completed the quest.
 	private int questsComplete;
-	private int currTicks;
+	private int ticks;
 
 	// The variables to interact with livesplit
 	PrintWriter writer;
@@ -49,9 +47,6 @@ public class QSRAutoSplitterPlugin extends Plugin
 
 	@Inject
 	private ClientToolbar clientToolbar;
-
-	@Getter
-	private boolean interpolate;
 
 	// side panel
 	private NavigationButton navButton;
@@ -91,13 +86,7 @@ public class QSRAutoSplitterPlugin extends Plugin
 		panel.disconnect();  // terminates active socket
 	}
 
-	@Subscribe
-	private void onClientShutdown(ClientShutdown e) {
-		sendMessage("pause");
-	}
-
 	private void sendMessage(String message) {
-
 		if (writer != null) {
 			writer.write(message + "\r\n");
 			writer.flush();
@@ -105,7 +94,6 @@ public class QSRAutoSplitterPlugin extends Plugin
 	}
 
 	private String receiveMessage() {
-
 		if (reader != null) {
 			try {
 				return reader.readLine();
@@ -151,7 +139,6 @@ public class QSRAutoSplitterPlugin extends Plugin
 	}
 	@Subscribe
 	public void onGameTick(GameTick event) {
-
 		if (!started && isInSpeedrun()) {
 			started = true;
 			sendMessage("reset");
@@ -200,7 +187,7 @@ public class QSRAutoSplitterPlugin extends Plugin
 					break;
 			}
 		}
-		if ( client.getWidget(WidgetInfo.QUEST_COMPLETED_NAME_TEXT) != null) {
+		if (client.getWidget(WidgetInfo.QUEST_COMPLETED_NAME_TEXT) != null) {
 			client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "QSR: quest complete", null);
 		}
 	}
@@ -216,8 +203,7 @@ public class QSRAutoSplitterPlugin extends Plugin
 		final int scriptId = (int) arguments[0];
 		if (scriptId == QSRID.SPEEDRUNNING_HELPER_UPDATE)
 		{
-			final int ticks = (int) arguments[1];
-			currTicks = ticks;
+			ticks = (int) arguments[1];
 			sendMessage("setgametime " + ticks*0.6);
 		}
 	}
@@ -323,7 +309,7 @@ public class QSRAutoSplitterPlugin extends Plugin
 	}
 
 	public void split() {
-		sendMessage("setgametime " + (currTicks + 1) * 0.6);
+		sendMessage("setgametime " + (ticks + 1) * 0.6);
 		sendMessage("split");
 	}
 }
