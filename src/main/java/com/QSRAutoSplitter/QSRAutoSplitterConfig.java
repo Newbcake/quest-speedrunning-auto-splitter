@@ -184,6 +184,7 @@ public interface QSRAutoSplitterConfig extends Config
 	{
 		return "Clay,0,434\n" +
 				"Key print,0,2423\n" +
+				"Onion,0,1957,2\n" +
 				"Yellow dye,0,1765\n" +
 				"Wig,0,2421\n" +
 				"Paste,0,2424\n" +
