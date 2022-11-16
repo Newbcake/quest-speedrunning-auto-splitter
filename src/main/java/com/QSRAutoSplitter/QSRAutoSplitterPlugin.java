@@ -279,7 +279,6 @@ public class QSRAutoSplitterPlugin extends Plugin
 			if (client.getVarpValue(pair.first) == pair.second) {
 				split();
 				varpList.remove(pair);
-
 			}
 		}
 	}

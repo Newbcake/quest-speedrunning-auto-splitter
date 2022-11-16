@@ -1,5 +1,6 @@
 package com.QSRAutoSplitter;
 
+import net.runelite.api.ItemID;
 import net.runelite.client.config.Config;
 import net.runelite.client.config.ConfigGroup;
 import net.runelite.client.config.ConfigItem;
@@ -273,10 +274,12 @@ public interface QSRAutoSplitterConfig extends Config
 		return "Melzar's map part,0,1535\n" +
 				"Thalzar's map part,0,1536\n" +
 				"Lozar's map part,0,1537\n" +
+				"Clay,0,434\n" +
+				"Bucket of water,0,1929\n" +
 				"Unfired bowl,0,1791\n" +
 				"Wizard's mind bomb,0,1907\n" +
 				"Lobster pot,0,301\n" +
-				"Silk,0,905\n" +
+				"Silk,0,950\n" +
 				"Anti-dragon shield,0,1540\n" +
 				"Hammer,0,2347\n" +
 				"Steel nails,0,1539,90\n" +
@@ -291,6 +294,7 @@ public interface QSRAutoSplitterConfig extends Config
 				"Bought boat,2,176,3\n" +
 				"Repaired boat,2,176,6\n" +
 				"Recruited Ned,2,176,7\n" +
+				"Crandor,2,176,8\n" +
 				"Elvarg slain,2,176,9\n" +
 				"Oracle,1,1832,1";
 	}

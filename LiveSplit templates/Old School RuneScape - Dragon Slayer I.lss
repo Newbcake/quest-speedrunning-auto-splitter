@@ -36,6 +36,15 @@
       <SegmentHistory />
     </Segment>
     <Segment>
+      <Name>Bucket of water</Name>
+      <Icon />
+      <SplitTimes>
+        <SplitTime name="Personal Best" />
+      </SplitTimes>
+      <BestSegmentTime />
+      <SegmentHistory />
+    </Segment>
+    <Segment>
       <Name>Silk</Name>
       <Icon />
       <SplitTimes>
