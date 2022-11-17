@@ -84,29 +84,14 @@ public class QSRAutoSplitterPlugin extends Plugin
 	protected void shutDown()
 	{
 		sendMessage("pause");
+		itemList = null;
+		varbList = null;
+		varpList = null;
 		clientToolbar.removeNavigation(navButton);
 		panel.disconnect();  // terminates active socket
 	}
 
-	private void sendMessage(String message) {
-		if (writer != null) {
-			writer.write(message + "\r\n");
-			writer.flush();
-		}
-	}
-
-	private String receiveMessage() {
-		if (reader != null) {
-			try {
-				return reader.readLine();
-			} catch (IOException e) {
-				return "ERROR";
-			}
-		}
-		return "ERROR";
-	}
-
-	private void setup(String configStr) {
+	private void setupSplits(String configStr) {
 		itemList = new ArrayList<>();
 		varbList = new ArrayList<>();
 		varpList = new ArrayList<>();
@@ -144,8 +129,7 @@ public class QSRAutoSplitterPlugin extends Plugin
 		if (!started && isInSpeedrun()) {
 			started = true;
 			sendMessage("reset");
-			sendMessage("initgametime"); //FIXME find better spot to init
-			//sendMessage("alwayspausegametime");
+			sendMessage("initgametime");
 			sendMessage("starttimer");
 
 			questsComplete = client.getVarbitValue(QSRID.QUESTS_COMPLETE_COUNTER);
@@ -172,7 +156,7 @@ public class QSRAutoSplitterPlugin extends Plugin
 					configStr = "";
 					break;
 			}
-			setup(configStr);
+			setupSplits(configStr);
 
 		} else if (started && !isInSpeedrun()) {
 			started = false;
@@ -187,9 +171,6 @@ public class QSRAutoSplitterPlugin extends Plugin
 				default:
 					break;
 			}
-		}
-		if (client.getWidget(WidgetInfo.QUEST_COMPLETED_NAME_TEXT) != null) {
-			client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "QSR: quest complete", null);
 		}
 	}
 
@@ -260,6 +241,21 @@ public class QSRAutoSplitterPlugin extends Plugin
 	}
 
 	@Subscribe
+	public void onItemContainerChanged(ItemContainerChanged event) {
+		final ItemContainer itemContainer = event.getItemContainer();
+		if (itemContainer != client.getItemContainer(InventoryID.INVENTORY)) {
+			return;
+		}
+
+		for (Pair<Integer, Integer> pair : itemList) {
+			if (itemContainer.count(pair.first) >= pair.second) {
+				split();
+				itemList.remove(pair);
+			}
+		}
+	}
+
+	@Subscribe
 	public void onVarbitChanged(VarbitChanged event) {
 		if (started && client.getVarbitValue(QSRID.QUESTS_COMPLETE_COUNTER) > questsComplete) {
 			completeRun();
@@ -280,23 +276,26 @@ public class QSRAutoSplitterPlugin extends Plugin
 		}
 	}
 
-	@Subscribe
-	public void onItemContainerChanged(ItemContainerChanged event) {
-		final ItemContainer itemContainer = event.getItemContainer();
-		if (itemContainer != client.getItemContainer(InventoryID.INVENTORY)) {
-			return;
-		}
+	public boolean isInSpeedrun() {
+		return client.getVarbitValue(QSRID.SPEEDRUN_ACTIVE_SIGNIFIER) == QSRID.IN_RUN;
+	}
 
-		for (Pair<Integer, Integer> pair : itemList) {
-			if (itemContainer.count(pair.first) >= pair.second) {
-				split();
-				itemList.remove(pair);
-			}
+	private void sendMessage(String message) {
+		if (writer != null) {
+			writer.write(message + "\r\n");
+			writer.flush();
 		}
 	}
 
-	public boolean isInSpeedrun() {
-		return client.getVarbitValue(QSRID.SPEEDRUN_ACTIVE_SIGNIFIER) == QSRID.IN_RUN;
+	private String receiveMessage() {
+		if (reader != null) {
+			try {
+				return reader.readLine();
+			} catch (IOException e) {
+				return "ERROR";
+			}
+		}
+		return "ERROR";
 	}
 
 	public void split() {
