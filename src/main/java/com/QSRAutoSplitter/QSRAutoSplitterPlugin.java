@@ -20,6 +20,8 @@ import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.*;
 
 @Slf4j
@@ -109,11 +111,11 @@ public class QSRAutoSplitterPlugin extends Plugin
 		varbList = new ArrayList<>();
 		varpList = new ArrayList<>();
 
-		String[] configList = configStr.split("\n");
+		final String[] configList = configStr.split("\n");
 
 		for (String line : configList) {
-			String[] args = line.split(",");
-			Pair<Integer, Integer> pair;
+			final String[] args = line.split(",");
+			final Pair<Integer, Integer> pair;
 			try {
 				int type = Integer.parseInt(args[1]);
 				if (type == 0) {
@@ -143,11 +145,12 @@ public class QSRAutoSplitterPlugin extends Plugin
 			started = true;
 			sendMessage("reset");
 			sendMessage("initgametime"); //FIXME find better spot to init
+			//sendMessage("alwayspausegametime");
 			sendMessage("starttimer");
 
 			questsComplete = client.getVarbitValue(QSRID.QUESTS_COMPLETE_COUNTER);
-			int currQuest = client.getVarbitValue(QSRID.SPEEDRUN_QUEST_SIGNIFIER);
-			String configStr = "";
+			final int currQuest = client.getVarbitValue(QSRID.SPEEDRUN_QUEST_SIGNIFIER);
+			final String configStr;
 
 			switch (currQuest) {
 				case QSRID.CA:   configStr = config.caList();   break;
@@ -170,9 +173,7 @@ public class QSRAutoSplitterPlugin extends Plugin
 					break;
 			}
 			setup(configStr);
-		} else if (started && client.getWidget(WidgetInfo.QUEST_COMPLETED_NAME_TEXT) != null) {
-			completeRun();
-			started = false;
+
 		} else if (started && !isInSpeedrun()) {
 			started = false;
 			sendMessage("getcurrenttimerphase");
@@ -225,15 +226,11 @@ public class QSRAutoSplitterPlugin extends Plugin
 		}
 	}
 
-	@Subscribe
-	public void onChatMessage(ChatMessage event) {
-	}
 	public void completeRun() {
-		questsComplete = 0;
 		started = false;
 		sendMessage("getcurrenttimerphase");
 		String msg = receiveMessage();
-		loop:
+
 		while (!msg.equals("ERROR")) {
 			switch (msg) {
 				case "Running":
@@ -244,7 +241,7 @@ public class QSRAutoSplitterPlugin extends Plugin
 					String j = receiveMessage();
 					if (i.equals(j)) {
 						split();
-						break loop;
+						return;
 					}
 					break;
 				case "Paused":
@@ -254,7 +251,7 @@ public class QSRAutoSplitterPlugin extends Plugin
 					sendMessage("unsplit");
 					break;
 				case "NotRunning":
-					break loop;
+					return;
 			}
 			sendMessage("getcurrenttimerphase");
 			msg = receiveMessage();
@@ -272,9 +269,9 @@ public class QSRAutoSplitterPlugin extends Plugin
 			if (client.getVarbitValue(pair.first) == pair.second) {
 				split();
 				varbList.remove(pair);
-
 			}
 		}
+
 		for (Pair<Integer, Integer> pair : varpList) {
 			if (client.getVarpValue(pair.first) == pair.second) {
 				split();
@@ -286,8 +283,7 @@ public class QSRAutoSplitterPlugin extends Plugin
 	@Subscribe
 	public void onItemContainerChanged(ItemContainerChanged event) {
 		final ItemContainer itemContainer = event.getItemContainer();
-		if (itemContainer != client.getItemContainer(InventoryID.INVENTORY))
-		{
+		if (itemContainer != client.getItemContainer(InventoryID.INVENTORY)) {
 			return;
 		}
 
@@ -295,7 +291,6 @@ public class QSRAutoSplitterPlugin extends Plugin
 			if (itemContainer.count(pair.first) >= pair.second) {
 				split();
 				itemList.remove(pair);
-
 			}
 		}
 	}
@@ -305,7 +300,9 @@ public class QSRAutoSplitterPlugin extends Plugin
 	}
 
 	public void split() {
-		sendMessage("setgametime " + (ticks + 1) * 0.6);
+		sendMessage("pausegametime");
+		sendMessage("setgametime " + BigDecimal.valueOf((ticks + 1) * 0.6).setScale(1, RoundingMode.HALF_UP));
 		sendMessage("split");
+		sendMessage("unpausegametime");
 	}
 }
