@@ -309,7 +309,19 @@ public interface QSRAutoSplitterConfig extends Config
 	)
 	default String tohList()
 	{
-		return "";
+		return "Safalaan 1,1,6396,20\n" +
+				"Harpert,1,6396,35\n" +
+				"Window,1,6396,45\n" +
+				"Safalaan 2,1,6396,55\n" +
+				"Flaygian,1,6396,65\n" +
+				"Safalaan 3,1,6396,75\n" +
+				"Give note,1,6396,90\n" +
+				"Start Abomination,1,6396,100\n" +
+				"End Abomination,1,6396,110\n" +
+				"Safalaan pre-flail,1,6396,120\n" +
+				"Safalaan post-flail,1,6396,135\n" +
+				"Start Ranis,1,6396,140\n" +
+				"End Ranis,1,6396,150";
 	}
 
 	@ConfigSection(
@@ -341,7 +353,53 @@ public interface QSRAutoSplitterConfig extends Config
 	)
 	default String sotfList()
 	{
-		return "";
+		return "Logs,0,1511,3\n" +
+				"Short vine,0,7778,3\n" +
+				"Vyrewatch top,0,9634\n" +
+				"Blisterwood logs,0,24691,8\n" +
+				"Veliaf,1,7255,4\n" +
+				"Hameln,1,7255,6\n" +
+				"Carl,1,7255,8\n" +
+				"Start stealth,1,7255,10\n" +
+				"End stealth,1,7255,14\n" +
+				"Start Kroy,1,7255,16\n" +
+				"Kill Kroy,1,7255,18\n" +
+				"Veliaf,1,7255,22\n" +
+				"Paterdomus,1,7255,28\n" +
+				"Fenkenstrain,1,7255,34\n" +
+				"End trek,1,7255,40\n" +
+				"Talk at boat,1,7255,42\n" +
+				"Start puzzle,1,7255,50\n" +
+				"End puzzle,1,7255,52\n" +
+				"Vertida,1,10348,1\n" +
+				"Kael,1,10347,1\n" +
+				"Radigad,1,10351,1\n" +
+				"Polmafi,1,10350,2\n" +
+				"Ivan,1,10349,1\n" +
+				"Veliaf,1,7255,56\n" +
+				"Vanescula,1,7255,58\n" +
+				"Start bloodveld,1,7255,62\n" +
+				"End bloodveld,1,7255,64\n" +
+				"Safalaan lab,1,7255,66\n" +
+				"Turn in book,1,7255,70\n" +
+				"Vanescula,1,7255,72\n" +
+				"Polmafi,1,7255,78\n" +
+				"Vanescula,1,7255,80\n" +
+				"Start Damien,1,7255,84\n" +
+				"End Damien,1,7255,88\n" +
+				"Vanescula,1,7255,90\n" +
+				"Desmodus,1,7255,94\n" +
+				"Mordan,1,7255,96\n" +
+				"Maria,1,7255,100\n" +
+				"Start valves,1,7255,108\n" +
+				"Start tree,1,7255,112\n" +
+				"Vanescula,1,7255,114\n" +
+				"Vertida,1,7255,118\n" +
+				"Vanescula,1,7255,122\n" +
+				"Fight cutscene,1,7255,128\n" +
+				"Start Vanstrom,1,7255,130\n" +
+				"Phase 1,2,1683,9571\n" +
+				"End Vanstrom,1,7255,132";
 	}
 
 	@ConfigSection(
