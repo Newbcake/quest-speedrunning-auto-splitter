@@ -150,6 +150,7 @@ public class QSRAutoSplitterPlugin extends Plugin
 				case QSRID.SOTF: configStr = config.sotfList(); break;
 				case QSRID.BIM:  configStr = config.bimList();  break;
 				case QSRID.AKD:  configStr = config.akdList();  break;
+				case QSRID.TOE:  configStr = config.toeList();  break;
 				case QSRID.BCS:  configStr = config.bcsList();  break;
 				default:
 					client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "QSR: quest not found; plugin needs to be updated", null);
