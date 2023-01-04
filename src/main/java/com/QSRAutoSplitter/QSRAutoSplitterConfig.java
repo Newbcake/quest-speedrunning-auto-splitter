@@ -154,9 +154,26 @@ public interface QSRAutoSplitterConfig extends Config
 	)
 	default String bimList()
 	{
-		return "";
+		return "Cooked meat,0,2142\n" +
+				"Knife,0,946\n" +
+				"Bread,0,2309\n" +
+				"Start,1,12063,10\n" +
+				"Janken,1,12066,40\n" +
+				"Checkal,1,12065,5\n" +
+				"Atlas,1,12065,10\n" +
+				"Montage,1,12065,15\n" +
+				"Flex,1,12065,40\n" +
+				"Charlie,1,12064,2\n" +
+				"Cook,1,12064,10\n" +
+				"Marley,1,12064,40\n" +
+				"Willow,1,12063,25\n" +
+				"Start fight,1,12063,35\n" +
+				"Ancient Guardian,1,12063,40";
 	}
 
+/*
+
+*/
 	@ConfigItem(
 			keyName = "dslist",
 			name = "Demon Slayer",
@@ -211,7 +228,51 @@ public interface QSRAutoSplitterConfig extends Config
 	)
 	default String toeList()
 	{
-		return "";
+		return "Bucket of water,0,1929\n" +
+				"Chisel,0,1755\n" +
+				"Mind rune,0,558,5\n" +
+				"Water rune,0,555,5\n" +
+				"Water rune,0,555,10\n" +
+				"Persten 1,1,13738,10\n" +
+				"Dark mage 1,1,13738,15\n" +
+				"Tea,1,13741,1\n" +
+				"Dark mage 2,1,13738,25\n" +
+				"Start puzzle,1,13738,35\n" +
+				"Puzzle,1,13738,40\n" +
+				"Dark Mage 2,1,13738,45\n" +
+				"Persten 2,1,13738,60\n" +
+				"Sedridor 1,1,13738,70\n" +
+				"Traiborn 1,1,13738,75\n" +
+				"Tamara 1,1,13742,1\n" +
+				"Felix 1,1,13743,1\n" +
+				"Cordelia 1,1,13744,1\n" +
+				"All viewed,1,13738,80\n" +
+				"Puzzle complete,1,13738,85\n" +
+				"Persten,1,13738,95\n" +
+				"Felix 2,1,13755,1\n" +
+				"Tamara 2,1,13754,1\n" +
+				"Cordelia 2,1,13756,1\n" +
+				"Great Guardian 1,1,13759,15\n" +
+				"Felix,1,13759,20\n" +
+				"Tamara,1,13759,25\n" +
+				"Cell,1,13759,30\n" +
+				"Tamara,1,13759,40\n" +
+				"Felix,1,13759,45\n" +
+				"Power guardians,1,13759,50\n" +
+				"Tamara,1,13759,55\n" +
+				"Tamara with 5 ess,1,13759,60\n" +
+				"Tamara after mind,1,13759,65\n" +
+				"Charge,1,13759,70\n" +
+				"Great Guardian,1,13759,75\n" +
+				"Tamara,1,13759,80\n" +
+				"Great guardian,1,13759,85\n" +
+				"Tamara,1,13759,90\n" +
+				"Water guardian,1,13759,95\n" +
+				"Tamara,1,13759,100\n" +
+				"Charge water cell,1,13759,105\n" +
+				"Tamara,1,13759,110\n" +
+				"Great Guardian,1,13738,120\n" +
+				"Great guardian cutscene,1,13738,125";
 	}
 
 	@ConfigSection(
