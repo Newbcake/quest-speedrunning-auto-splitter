@@ -77,6 +77,10 @@ public class QSRAutoSplitterPlugin extends Plugin
 				.icon(icon).priority(6).panel(panel).build();
 		clientToolbar.addNavigation(navButton);
 
+		itemList = new ArrayList<>();
+		varbList = new ArrayList<>();
+		varpList = new ArrayList<>();
+
 		panel.startPanel();
 	}
 
