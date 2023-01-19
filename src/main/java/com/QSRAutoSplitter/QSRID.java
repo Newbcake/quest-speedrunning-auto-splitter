@@ -19,7 +19,7 @@ public final class QSRID {
     public static final int DSI = 17;
     public static final int DSII = 148;
     public static final int TOH = 150;
-    public static final int XMS = 155;
+    public static final int XMS = 154;
     public static final int SOTF = 158;
     public static final int BIM = 162;
     public static final int AKD = 164;
