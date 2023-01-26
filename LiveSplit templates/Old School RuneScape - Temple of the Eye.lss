@@ -171,15 +171,6 @@
       <SegmentHistory />
     </Segment>
     <Segment>
-      <Name>Enter Temple</Name>
-      <Icon />
-      <SplitTimes>
-        <SplitTime name="Personal Best" />
-      </SplitTimes>
-      <BestSegmentTime />
-      <SegmentHistory />
-    </Segment>
-    <Segment>
       <Name>Felix</Name>
       <Icon />
       <SplitTimes>
