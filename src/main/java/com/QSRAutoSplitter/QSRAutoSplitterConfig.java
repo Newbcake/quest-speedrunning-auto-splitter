@@ -76,7 +76,11 @@ public interface QSRAutoSplitterConfig extends Config
 	)
 	default String bkfList()
 	{
-		return "";
+		return "Iron chainbody,0,1101\n" +
+				"Bronze med helm,0,1139\n" +
+				"Cabbage,0,1965\n" +
+				"Grill,2,130,2\n" +
+				"Hole,2,130,3";
 	}
 
 	@ConfigItem(
@@ -134,7 +138,12 @@ public interface QSRAutoSplitterConfig extends Config
 	)
 	default String xmsList()
 	{
-		return "";
+		return "Spade,0,952\n" +
+				"Veos,1,8063,2\n" +
+				"Window,1,8063,3\n" +
+				"Castle,1,8063,4\n" +
+				"Leela,1,8063,5\n" +
+				"Pig pen,1,8063,6";
 	}
 
 	@ConfigSection(
