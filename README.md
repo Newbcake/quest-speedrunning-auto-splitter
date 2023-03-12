@@ -1,5 +1,7 @@
 # Quest Speedrunning Auto Splitter
 
+Be sure to **download the project** and open all of the files in LiveSplit Templates. Otherwise, you won't have the formatting or the splits. 
+
 Using this plugin requires the LiveSplit program with the LiveSplit server component.
 
 Installation and setup guide can be found here:
