@@ -402,7 +402,75 @@ public interface QSRAutoSplitterConfig extends Config
 	)
 	default String akdList()
 	{
-		return "";
+		return "Martin 1,1,12296,4\n" +
+				"Fullore 1,1,12296,6\n" +
+				"Fuggy,1,12296,14\n" +
+				"Herbert,1,12296,16\n" +
+				"Start Judge of Yama,1,12296,18\n" +
+				"Judge of Yama,1,12296,20\n" +
+				"Yama cutscene,1,12296,24\n" +
+				"Fullore 2,1,12296,26\n" +
+				"Dark essence block,0,13446\n" +
+				"Martin 2,1,12296,30\n" +
+				"Steal key,1,12296,32\n" +
+				"Display case,1,12296,34\n" +
+				"Martin 3,1,12296,42\n" +
+				"Martin ruins,1,12296,44\n" +
+				"Rose panel,1,12296,50\n" +
+				"Start assassin 1,1,12296,56\n" +
+				"Assassin 1,1,12296,58\n" +
+				"Winter panel,1,12296,64\n" +
+				"Martin bar,1,12296,70\n" +
+				"Bar panel,1,12296,72\n" +
+				"Statue puzzle,1,12296,74\n" +
+				"Arrest,1,12296,76\n" +
+				"Move boxes,1,12296,80\n" +
+				"Rose cutscene,1,12296,84\n" +
+				"Volcanic sulphur,0,13571\n" +
+				"Kaht B'alam 1,1,12296,88\n" +
+				"Lizard egg,1,12296,90\n" +
+				"Damp key,0,25810\n" +
+				"Start Xamphur,1,12296,100\n" +
+				"Xamphur,1,12296,102\n" +
+				"Search table,1,12296,106\n" +
+				"Funeral,1,12296,110\n" +
+				"Invite Piscarilius,1,12313,1\n" +
+				"Invite Arceuus,1,12314,1\n" +
+				"Molten glass,0,1775\n" +
+				"Invite Lovakengj,1,12315,1\n" +
+				"Invite Hosidius,1,12316,1\n" +
+				"Invite Shayzien,1,12317,1\n" +
+				"Meeting,1,12296,122\n" +
+				"Fullore,1,12296,124\n" +
+				"Shayzien,1,12322,2\n" +
+				"Lovakengj,1,12320,2\n" +
+				"Piscarilius,1,12318,2\n" +
+				"Arceuus,1,12319,2\n" +
+				"Fullore,1,12320,4\n" +
+				"Hosidius,1,12321,2\n" +
+				"Taskaal,1,12319,6\n" +
+				"Enchant potion,1,12319,8\n" +
+				"Doors of Dinh,1,12319,10\n" +
+				"Start barbarian,1,12321,4\n" +
+				"Barbarian,1,12321,6\n" +
+				"Phileas,1,12321,8\n" +
+				"Martin,1,12320,6\n" +
+				"Start assassin 2,1,12320,10\n" +
+				"Assassin 2,1,12320,12\n" +
+				"Jorra,1,12320,14\n" +
+				"Mori,1,12318,8\n" +
+				"Chasm,1,12318,10\n" +
+				"Chest,1,12322,6\n" +
+				"Arceuus,1,12319,12\n" +
+				"Hosidius,1,12321,10\n" +
+				"Shayzien,1,12322,8\n" +
+				"Lovakengj,1,12320,16\n" +
+				"Piscarilius,1,12318,12\n" +
+				"Meeting,1,12296,138\n" +
+				"Fullore,1,12296,140\n" +
+				"Hosidius,1,12296,142\n" +
+				"Fullore,1,12296,144\n" +
+				"Coronation,1,12296,148";
 	}
 
 	@ConfigItem(
@@ -480,6 +548,88 @@ public interface QSRAutoSplitterConfig extends Config
 	)
 	default String dsiiList()
 	{
-		return "";
+		return "Goutweed,0,3261\n" +
+				"Oak planks,0,8778,8\n" +
+				"Saw,0,8794\n" +
+				"Hammer,0,2347\n" +
+				"Swamp paste,0,1941,10\n" +
+				"Molten glass,0,1775,2\n" +
+				"Glassblowing pipe,0,1785\n" +
+				"Spade,0,952\n" +
+				"Astral rune,0,9075\n" +
+				"Tinderbox,0,590\n" +
+				"Pestle and mortar,0,233\n" +
+				"Dallas Jones (Karamja),1,6104,10\n" +
+				"Dallas Jones (Elvarg),1,6104,15\n" +
+				"Enter lab,1,6104,20\n" +
+				"Start Spawn,1,6104,22\n" +
+				"Spawn,1,6104,25\n" +
+				"Mural,1,6104,30\n" +
+				"Dallas Jones (lab),1,6104,35\n" +
+				"Dallas Jones (hoth),1,6104,40\n" +
+				"Puzzle start,1,6104,45\n" +
+				"Puzzle,1,6104,50\n" +
+				"Dallas Jones (hoth),1,6104,55\n" +
+				"Jardic,1,6104,60\n" +
+				"Build rowboat,1,6104,65\n" +
+				"Lithkren,1,6104,71\n" +
+				"Dallas Jones (lithkren),1,6104,80\n" +
+				"Diary of Aviras,1,6104,81\n" +
+				"Dallas Jones (lithkren),1,6104,90\n" +
+				"Bob the cat,1,6104,95\n" +
+				"Sphinx,1,6104,100\n" +
+				"Oneiromancer,1,6104,105\n" +
+				"Enter dream,1,6104,110\n" +
+				"Bob,1,6104,111\n" +
+				"Start Robert the Strong,1,6100,280\n" +
+				"Robert the Strong,1,6104,115\n" +
+				"Cutscene,1,6104,120\n" +
+				"Bob,1,6104,125\n" +
+				"Enter Karamja temple,1,6106,15\n" +
+				"Key piece (Karamja),1,6106,20\n" +
+				"Reldo,1,6107,10\n" +
+				"Census,1,6107,15\n" +
+				"Reldo,1,6107,25\n" +
+				"Sarah,1,6107,35\n" +
+				"Ava,1,6107,40\n" +
+				"Locator orb,1,6107,50\n" +
+				"Key piece (Morytania),1,6107,55\n" +
+				"Start bust,1,6105,25\n" +
+				"Key piece (Shayzien),1,6105,35\n" +
+				"Brundt,1,6108,10\n" +
+				"Torfinn,1,6108,15\n" +
+				"Start Vorkath,1,6108,25\n" +
+				"Vorkath,1,6108,30\n" +
+				"Key piece (Ungael),1,6108,35\n" +
+				"Mithril door,1,6108,40\n" +
+				"Dragon heads,1,6108,45\n" +
+				"Dragon key,1,6104,135\n" +
+				"Ancient doors,1,6104,140\n" +
+				"Dallas Jones (Lithkren),1,6104,145\n" +
+				"Zorgoth,1,6104,150\n" +
+				"Jardric,1,6104,155\n" +
+				"King Roald,1,6104,160\n" +
+				"King Thoros,1,6113,1\n" +
+				"Chieftan Brundt,1,6114,1\n" +
+				"Sir Amik Varze,1,6115,1\n" +
+				"Meeting,1,6104,165\n" +
+				"Bob,1,6104,170\n" +
+				"Start assault,1,6104,175\n" +
+				"Assault,1,6104,180\n" +
+				"Start agility,1,6104,181\n" +
+				"Red dragon,1,6104,182\n" +
+				"Iron dragon,1,6104,183\n" +
+				"Brutal green dragon,1,6104,184\n" +
+				"Start final ship,1,6104,185\n" +
+				"Bob,1,6104,186\n" +
+				"Green and blue dragons,1,6104,190\n" +
+				"Start wave 2,1,6104,191\n" +
+				"Red dragon,1,6104,195\n" +
+				"Start wave 3,1,6104,196\n" +
+				"Rune dragon,1,6104,200\n" +
+				"Start Galvek,1,6104,201\n" +
+				"Phase 2,1,6099,600\n" +
+				"Galvek,1,6104,205\n" +
+				"Bob memorial,1,6104,210";
 	}
 }
